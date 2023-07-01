@@ -1,0 +1,12 @@
+.root {
+    -fx-background-color: #1f1f1f;
+}
+
+.combo-box .cell {
+    -fx-text-fill: white;
+    -fx-background-color: #1f1f1f;
+}
+
+.combo-box .cell:hover {
+    -fx-background-color: #333333;
+}
