@@ -210,7 +210,7 @@ public class ConverterController implements Initializable {
             "ZWL : Zimbabwe"
     );
 
-    private final String apiKey = "d724edadcc98426c9b58bb884cb6ff7d";
+    private final String apiKey = "YOUR_API_KEY";
     
 
     public void convert(ActionEvent actionEvent) {
@@ -230,7 +230,6 @@ public class ConverterController implements Initializable {
             event.consume();
         });
 
-        // Configurar el filtro para aceptar solo números
         UnaryOperator<TextFormatter.Change> numberFilter = change -> {
             String newText = change.getControlNewText();
             if (newText.matches("\\d*")) {
@@ -239,7 +238,6 @@ public class ConverterController implements Initializable {
             return null;
         };
 
-        // Aplicar el filtro al TextField
         TextFormatter<String> textFormatter = new TextFormatter<>(numberFilter);
         inpAmount.setTextFormatter(textFormatter);
 
@@ -269,11 +267,9 @@ public class ConverterController implements Initializable {
             stage.setY(event.getScreenY() -yOffset);
         });
 
-        //CODIGO PARA REALIZAR LA CONVERSION
         drpFrom.getItems().addAll(currencies);
         drpTo.getItems().addAll(currencies);
 
-        // Configurar el evento de clic del botón de conversión
         btnConvert.setOnAction(event -> {
             double amount = Double.parseDouble(inpAmount.getText());
             String fromCurrency = drpFrom.getValue().substring(0, 3);
@@ -305,14 +301,9 @@ public class ConverterController implements Initializable {
 
 
     private double convertCurrency(double amount, String fromCurrency, String toCurrency) throws IOException {
-        // Construir la URL de la API con los parámetros de conversión
         String url = "https://openexchangerates.org/api/latest.json?app_id=" + apiKey;
-
-        // Realizar la solicitud GET a la API
         HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
         connection.setRequestMethod("GET");
-
-        // Leer la respuesta de la API
         BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
         String line;
         StringBuilder response = new StringBuilder();
@@ -321,15 +312,11 @@ public class ConverterController implements Initializable {
         }
         reader.close();
 
-        // Parsear la respuesta como un objeto JSON
         JSONObject json = new JSONObject(response.toString());
 
-        // Obtener la tasa de conversión para la moneda de destino
         JSONObject rates = json.getJSONObject("rates");
         double fromRate = rates.getDouble(fromCurrency);
         double toRate = rates.getDouble(toCurrency);
-
-        // Realizar la conversión de moneda
 
         return amount * (toRate / fromRate);
     }
